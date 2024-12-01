@@ -6,9 +6,36 @@ import {
   updateContact,
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from '../untils/parsePaginationParams.js';
+import { parseSortParams } from '../untils/parseSortParams.js';
+import { parseFilterParams } from '../untils/parseFilterParams.js';
 
 export const getContactsController = async (req, res) => {
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+
+  if (!contacts.data.length) {
+    const typeMessage = filter.type ? `with type ${filter.type}` : '';
+    const favMessage =
+      filter.isFavourite !== undefined
+        ? `and isFavourite=${filter.isFavourite}`
+        : '';
+
+    throw createHttpError(
+      404,
+      `No contacts found ${typeMessage} ${favMessage}`.trim(),
+    );
+  }
 
   res.json({
     status: 200,
