@@ -25,10 +25,6 @@ export const getContactsController = async (req, res) => {
     userId,
   });
 
-  // if (!contacts.length) {
-  //     throw createHttpError(404, `No contacts found with type ${filter.type}`);
-  // }
-
   if (!contacts.data.length) {
     const typeMessage = filter.type ? `with type ${filter.type}` : '';
     const favMessage =
