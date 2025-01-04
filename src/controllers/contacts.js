@@ -108,7 +108,7 @@ export const deleteContactController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const patchContactController = async (req, res, next) => {
+export const patchContactController = async (req, res) => {
   const { _id: userId } = req.user;
   const { contactId } = req.params;
   const photo = req.file;
